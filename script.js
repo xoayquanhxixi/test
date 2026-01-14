@@ -41,7 +41,8 @@ function takeSnapshot() {
 
   // Build Polaroid frame
   const dataURL = canvas.toDataURL("image/png");
-  addToGallery(latestImage);
+latestImage = dataURL;
+addToGallery(dataURL);
 }
 
 function addToGallery(dataURL) {
@@ -62,12 +63,12 @@ downloadButton.disabled = false;
   gallery.appendChild(frame);
 
   // Trigger download
- ddownloadButton.addEventListener("click", () => {
+ downloadButton.addEventListener("click", () => {
   if (!latestImage) return;
 
   const link = document.createElement("a");
   link.href = latestImage;
-  link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
+  link.download = `polaroid_${getFormattedDate().replace(/[:/]/g, "_")}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
