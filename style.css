@@ -24,7 +24,8 @@ button {
     padding: 15px 30px;
     font-size: 18px;
     color: #1e3a8a;
-    margin-top: 15px;
+    margin-top: 8px;
+    margin-bottom: 6px;
     cursor: pointer;
     transition: 0.2s ease;
 }
@@ -45,7 +46,7 @@ button:hover {
     background: white;
     width: 350px;
     padding: 10px;
-    margin: 20px auto;
+    margin: 10px auto;
     border: 5px solid #f2f0f3;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
