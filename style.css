@@ -31,6 +31,7 @@ video{
     display: block;
     width: 100%;
     max-width: 390px;
+    height: 480px;
     aspect-ratio: 3/4;
     object-fit: cover;
     border-radius: 14px;
