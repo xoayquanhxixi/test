@@ -63,6 +63,8 @@ function addToGallery(dataURL) {
 function downloadImage(dataURL) {
   const link = document.createElement("a");
   link.href = dataURL;
-  link.download = "polaroid_" + Date.now() + ".png";
+  link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
 }
