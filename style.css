@@ -18,7 +18,7 @@ body {
     gap: 6px;
 }
 video{
-    width: 70%;
+    width: 90%;
     border-radius: 14px;
 }
 
@@ -31,7 +31,7 @@ button {
     background: #c8d8f6;
     border: none;
     border-radius: 30px;
-    padding: 15px 30px;
+    padding: 12px 28px;
     font-size: 18px;
     color: #1e3a8a;
     margin-top: 8px;
