@@ -58,6 +58,8 @@ if (video.videoWidth===0)
   return;
 }
 
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
   canvas.getContext("2d").drawImage(video, 0, 0);
 
   // Build Polaroid frame
@@ -83,7 +85,6 @@ downloadButton.disabled = false;
   frame.appendChild(dateTag);
   gallery.appendChild(frame);
 }
-                                 );
 
 // Trigger download
  downloadButton.addEventListener("click", () => {
@@ -91,8 +92,9 @@ downloadButton.disabled = false;
 
   const link = document.createElement("a");
   link.href = latestImage;
-  link.download = `polaroid_${Date.now).replace(/[:/]/g, "_")}.png`;
+  link.download = `polaroid_${Date.now()}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+ });
 
