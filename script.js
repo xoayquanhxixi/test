@@ -1,7 +1,7 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const takePhotoButton = document.getElementById("takePhoto");
-const downloadButton ocument.getElementById("downloadPhoto");
+const downloadButton = document.getElementById("downloadPhoto");
 const countdownEl = document.getElementById("countdown");
 const gallery = document.getElementById("gallery");
 
@@ -41,10 +41,12 @@ function takeSnapshot() {
 
   // Build Polaroid frame
   const dataURL = canvas.toDataURL("image/png");
-  addToGallery(dataURL);
+  addToGallery(latestImage);
 }
 
 function addToGallery(dataURL) {
+downloadButton.disabled = false;
+
   const frame = document.createElement("div");
   frame.className = "photo-frame";
 
@@ -60,16 +62,15 @@ function addToGallery(dataURL) {
   gallery.appendChild(frame);
 
   // Trigger download
- downloadButton.addEventListener("click", () => 
-{
+ ddownloadButton.addEventListener("click", () => {
   if (!latestImage) return;
 
-const link = document.createElement("a");
-link.href = latestImage;
-link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
+  const link = document.createElement("a");
+  link.href = latestImage;
+  link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
   document.body.appendChild(link);
   link.click();
-document.body.appendChild (link);
+  document.body.removeChild(link);
 }
                                  );
 
