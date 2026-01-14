@@ -1,8 +1,11 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const takePhotoButton = document.getElementById("takePhoto");
+const downloadButton ocument.getElementById("downloadPhoto");
 const countdownEl = document.getElementById("countdown");
 const gallery = document.getElementById("gallery");
+
+let latestImage = null;
 
 // Start webcam video
 navigator.mediaDevices
@@ -57,14 +60,16 @@ function addToGallery(dataURL) {
   gallery.appendChild(frame);
 
   // Trigger download
-  downloadImage(dataURL);
-}
+ downloadButton.addEventListener("click", () => 
+{
+  if (!latestImage) return;
 
-function downloadImage(dataURL) {
-  const link = document.createElement("a");
-  link.href = dataURL;
-  link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
+const link = document.createElement("a");
+link.href = latestImage;
+link.download = `polaroid_${getFormattedDate().replace(" ", "_")}.png`;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+document.body.appendChild (link);
 }
+                                 );
+
