@@ -28,11 +28,13 @@ h1
 }
 
 video{
-    width: 120%;
+    display: block;
+    width: 100%;
     max-width: 390px;
     aspect-ratio: 3/4;
     object-fit: cover;
     border-radius: 14px;
+    background:white;
 }
 
 canvas
