@@ -8,10 +8,27 @@ const gallery = document.getElementById("gallery");
 let latestImage = null;
 
 // Start webcam video
-navigator.mediaDevices
-  .getUserMedia({ video: true })
-  .then((stream) => (video.srcObject = stream))
-  .catch((err) => alert("Error accessing camera: " + err));
+window.addEventListener("load", () =>
+  {
+    startCamera();
+  });
+
+async function startCamera()
+{
+  try 
+  {
+    const stream = await
+navigator.mediaDevices.getUserMedia({video:true});
+video.srcObject = stream;
+video.onloadedmetadata = () =>
+  {
+video.play();
+  };
+  } catch(err)
+  {
+    alert("Error accessing camera: " + err)
+  }
+}
 
 // Countdown settings
 const COUNT_TIME = 3;
@@ -35,8 +52,12 @@ function startCountdown(time) {
 }
 
 function takeSnapshot() {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+if (video.videoWidth===0)
+{
+  alert("Camera not ready yet");
+  return;
+}
+
   canvas.getContext("2d").drawImage(video, 0, 0);
 
   // Build Polaroid frame
@@ -61,17 +82,17 @@ downloadButton.disabled = false;
   frame.appendChild(img);
   frame.appendChild(dateTag);
   gallery.appendChild(frame);
+}
+                                 );
 
-  // Trigger download
+// Trigger download
  downloadButton.addEventListener("click", () => {
   if (!latestImage) return;
 
   const link = document.createElement("a");
   link.href = latestImage;
-  link.download = `polaroid_${getFormattedDate().replace(/[:/]/g, "_")}.png`;
+  link.download = `polaroid_${Date.now).replace(/[:/]/g, "_")}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
-                                 );
 
