@@ -18,7 +18,7 @@ body {
     gap: 6px;
 }
 video{
-    width: 90%;
+    width: 120%;
     border-radius: 14px;
 }
 
@@ -30,7 +30,7 @@ canvas
 button {
     background: #c8d8f6;
     border: none;
-    border-radius: 30px;
+    border-radius: 999px;
     padding: 12px 28px;
     font-size: 18px;
     color: #1e3a8a;
@@ -45,20 +45,20 @@ button:hover {
 }
 
 #countdown {
-    font-size: 48px;
+    font-size: 40px;
     font-weight: bold;
     color: #1e3a8a;
-    margin: 15px 0;
+    margin: 4px 0;
 }
 
 /* Polaroid frame */
 .photo-frame {
     background: white;
-    width: 350px;
+    width: 320px;
     padding: 10px;
     margin: 10px auto;
     border: 5px solid #f2f0f3;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .photo-frame img {
