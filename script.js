@@ -8,23 +8,24 @@ const gallery = document.getElementById("gallery");
 let latestImage = null;
 
 // Start webcam video
-window.addEventListener("load", () =>
-  {
-    startCamera();
-  });
-
 async function startCamera()
 {
   try 
   {
     const stream = await
-navigator.mediaDevices.getUserMedia({video:true});
+navigator.mediaDevices.getUserMedia(
+  {
+    video: {facingMode: "user"
+          }
+  });
 video.srcObject = stream;
+
 video.onloadedmetadata = () =>
   {
 video.play();
   };
-  } catch(err)
+  }
+  catch(err)
   {
     alert("Error accessing camera: " + err)
   }
@@ -34,6 +35,7 @@ video.play();
 const COUNT_TIME = 3;
 
 takePhotoButton.addEventListener("click", () => {
+  startCamera();
   startCountdown(COUNT_TIME);
 });
 
