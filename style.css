@@ -34,7 +34,7 @@ video{
     aspect-ratio: 3/4;
     object-fit: cover;
     border-radius: 14px;
-    background:white;
+    background: black;
 }
 
 canvas
