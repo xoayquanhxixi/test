@@ -69,7 +69,7 @@ button:hover {
     background: #e6ecfa;
 }
 
-#downloadPhoto: disabled
+#downloadPhoto:disabled
 {
     opacity: 0.5;
     cursor: not-allowed;
