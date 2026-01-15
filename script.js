@@ -92,13 +92,6 @@ canvas.height = video.videoHeight + 100;
   ctx.fillStyle = "white";
   ctx.fillRect(0, video.videoHeight, canvas.width, 100);
 
-  // Draw date text
-  ctx.fillStyle = "black";
-  ctx.font = "18px Arial";
-  ctx.textAlign = "center";
-  const dateText = "Taken on: " + new Date().toLocaleString();
-  ctx.fillText(dateText, canvas.width / 2, video.videoHeight + 40);
-
   // Draw logo text
   ctx.font = "20px Arial";
   ctx.fillText("@CHEMISTRY30S", canvas.width / 2, video.videoHeight + 75);
