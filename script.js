@@ -6,44 +6,62 @@ const countdownEl = document.getElementById("countdown");
 const gallery = document.getElementById("gallery");
 
 let latestImage = null;
+let cameraStarted = false;
 
 // Start webcam video
 async function startCamera()
 {
   try 
   {
-    const stream = await
-navigator.mediaDevices.getUserMedia(
+    const stream = await navigator.mediaDevices.getUserMedia(
   {
     video: {facingMode: "user"
           }
   });
 video.srcObject = stream;
 
-video.onloadedmetadata = () =>
-  {
-video.play();
-  };
+  return new Promise((resolve) => 
+{
+      video.onloadedmetadata = () => 
+{
+        video.play();
+        resolve(true);
+      };
+    });
+
   }
+
   catch(err)
   {
-    alert("Error accessing camera: " + err)
+    alert("Error accessing camera: " + err);
+return false;
+
   }
 }
 
 // Countdown settings
 const COUNT_TIME = 3;
 
-takePhotoButton.addEventListener("click", () => {
-  startCamera();
-  startCountdown(COUNT_TIME);
-});
+takePhotoButton.addEventListener("click", async () => 
+  {
+  if (!cameraStarted)
+  {
+    const cameraReady = await startCamera();
+    if (!cameraReady) return;
+    cameraStarted = true;
+}
+    startCountdown(COUNT_TIME);
+  });
 
-function startCountdown(time) {
+function startCountdown(time) 
+{
   countdownEl.textContent = time;
-  let interval = setInterval(() => {
+  
+  let interval = setInterval(() =>
+    {
     time--;
-    if (time > 0) {
+    if (time > 0) 
+    {
       countdownEl.textContent = time;
     } else {
       clearInterval(interval);
@@ -59,15 +77,36 @@ if (video.videoWidth===0)
   alert("Camera not ready yet");
   return;
 }
+  
+  const ctx = canvas.getContext("2d");
 
 canvas.width = video.videoWidth;
-canvas.height = video.videoHeight;
-  canvas.getContext("2d").drawImage(video, 0, 0);
+canvas.height = video.videoHeight + 100;
 
-  // Build Polaroid frame
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the camera image
+  ctx.drawImage(video, 0, 0, canvas.width, video.videoHeight);
+
+  // Draw white Polaroid frame
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, video.videoHeight, canvas.width, 100);
+
+  // Draw date text
+  ctx.fillStyle = "black";
+  ctx.font = "18px Arial";
+  ctx.textAlign = "center";
+  const dateText = "Taken on: " + new Date().toLocaleString();
+  ctx.fillText(dateText, canvas.width / 2, video.videoHeight + 40);
+
+  // Draw logo text
+  ctx.font = "20px Arial";
+  ctx.fillText("@CHEMISTRY30S", canvas.width / 2, video.videoHeight + 75);
+
+  // Save final image with frame + date + logo
   const dataURL = canvas.toDataURL("image/png");
-latestImage = dataURL;
-addToGallery(dataURL);
+  latestImage = dataURL;
+  addToGallery(dataURL);
 }
 
 function addToGallery(dataURL) {
@@ -89,7 +128,8 @@ downloadButton.disabled = false;
 }
 
 // Trigger download
- downloadButton.addEventListener("click", () => {
+ downloadButton.addEventListener("click", () => 
+   {
   if (!latestImage) return;
 
   const link = document.createElement("a");
