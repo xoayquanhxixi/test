@@ -88,13 +88,20 @@ canvas.height = video.videoHeight + 100;
   // Draw the camera image
   ctx.drawImage(video, 0, 0, canvas.width, video.videoHeight);
 
-  // Draw white Polaroid frame
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, video.videoHeight, canvas.width, 100);
+// Draw white Polaroid frame
+ctx.fillStyle = "white";
+ctx.fillRect(0, video.videoHeight, canvas.width, 100);
 
-  // Draw logo text
-  ctx.font = "20px Arial";
-  ctx.fillText("@CHEMISTRY30S", canvas.width / 2, video.videoHeight + 75);
+// Draw date text
+ctx.fillStyle = "black";
+ctx.font = "18px Arial";
+ctx.textAlign = "center";
+const dateText = "Taken on: " + new Date().toLocaleString();
+ctx.fillText(dateText, canvas.width / 2, video.videoHeight + 40);
+
+// Draw logo text
+ctx.font = "20px Arial";
+ctx.fillText("@CHEMISTRY30S", canvas.width / 2, video.videoHeight + 75);
 
   // Save final image with frame + date + logo
   const dataURL = canvas.toDataURL("image/png");
@@ -103,7 +110,7 @@ canvas.height = video.videoHeight + 100;
 }
 
 function addToGallery(dataURL) {
-downloadButton.disabled = false;
+  downloadButton.disabled = false;
 
   const frame = document.createElement("div");
   frame.className = "photo-frame";
@@ -111,12 +118,7 @@ downloadButton.disabled = false;
   const img = document.createElement("img");
   img.src = dataURL;
 
-  const dateTag = document.createElement("div");
-  dateTag.className = "photo-date";
-  dateTag.textContent = "Taken on: " + new Date().toLocaleString();
-
   frame.appendChild(img);
-  frame.appendChild(dateTag);
   gallery.appendChild(frame);
 }
 
