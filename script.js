@@ -4,64 +4,66 @@ const takePhotoButton = document.getElementById("takePhoto");
 const downloadButton = document.getElementById("downloadPhoto");
 const countdownEl = document.getElementById("countdown");
 const gallery = document.getElementById("gallery");
+const flipCameraButton = document.getElementById("flipCamera");
 
 let latestImage = null;
 let cameraStarted = false;
+let usingFrontCamera = true;
+let currentStream = null;
 
-// Start webcam video
-async function startCamera()
-{
-  try 
-  {
-    const stream = await navigator.mediaDevices.getUserMedia(
-  {
-    video: {facingMode: "user"
-          }
-  });
-video.srcObject = stream;
+// Start camera (front or back)
+async function startCamera() {
+  try {
+    if (currentStream) {
+      currentStream.getTracks().forEach(track => track.stop());
+    }
 
-  return new Promise((resolve) => 
-{
-      video.onloadedmetadata = () => 
-{
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: usingFrontCamera ? "user" : "environment" }
+    });
+
+    currentStream = stream;
+    video.srcObject = stream;
+
+    return new Promise(resolve => {
+      video.onloadedmetadata = () => {
         video.play();
+
+        if (usingFrontCamera)
+        {
+video.classList.add("mirror");
+        } else {
+video.classList.remove("mirror");
+        }
+
+
         resolve(true);
       };
     });
-
-  }
-
-  catch(err)
-  {
+  } catch (err) {
     alert("Error accessing camera: " + err);
-return false;
-
+    return false;
   }
 }
 
-// Countdown settings
+// Countdown
 const COUNT_TIME = 3;
 
-takePhotoButton.addEventListener("click", async () => 
-  {
-  if (!cameraStarted)
-  {
-    const cameraReady = await startCamera();
-    if (!cameraReady) return;
+takePhotoButton.addEventListener("click", async () => {
+  if (!cameraStarted) {
+    const ready = await startCamera();
+    if (!ready) return;
     cameraStarted = true;
-}
-    startCountdown(COUNT_TIME);
-  });
+  }
+  startCountdown(COUNT_TIME);
+});
 
-function startCountdown(time) 
-{
+function startCountdown(time) {
   countdownEl.textContent = time;
-  
-  let interval = setInterval(() =>
-    {
+
+  const interval = setInterval(() => {
     time--;
-    if (time > 0) 
-    {
+    if (time > 0) {
       countdownEl.textContent = time;
     } else {
       clearInterval(interval);
@@ -71,44 +73,55 @@ function startCountdown(time)
   }, 1000);
 }
 
+// Take photo
 function takeSnapshot() {
-if (video.videoWidth===0)
-{
-  alert("Camera not ready yet");
-  return;
-}
-  
+  if (video.videoWidth === 0) {
+    alert("Camera not ready yet");
+    return;
+  }
+
   const ctx = canvas.getContext("2d");
 
-canvas.width = video.videoWidth;
-canvas.height = video.videoHeight + 100;
+  const border = 25;
+  const bottomBorder = 100;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.width = video.videoWidth + border * 2;
+  canvas.height = video.videoHeight + border + bottomBorder;
 
-  // Draw the camera image
-  ctx.drawImage(video, 0, 0, canvas.width, video.videoHeight);
+  // White Polaroid background
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Draw white Polaroid frame
-ctx.fillStyle = "white";
-ctx.fillRect(0, video.videoHeight, canvas.width, 100);
+  // Draw image (mirror ONLY front camera)
+  if (usingFrontCamera) {
+    ctx.save();
+    ctx.translate(border + video.videoWidth, border);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+    ctx.restore();
+  } else {
+    ctx.drawImage(video, border, border, video.videoWidth, video.videoHeight);
+  }
 
-// Draw date text
-ctx.fillStyle = "black";
-ctx.font = "18px Arial";
-ctx.textAlign = "center";
-const dateText = "Taken on: " + new Date().toLocaleString();
-ctx.fillText(dateText, canvas.width / 2, video.videoHeight + 40);
+  // Date
+  ctx.fillStyle = "black";
+  ctx.font = "18px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    "Taken on: " + new Date().toLocaleString(),
+    canvas.width / 2,
+    canvas.height - 55
+  );
 
-// Draw logo text
-ctx.font = "20px Arial";
-ctx.fillText("@CHEMISTRY30S", canvas.width / 2, video.videoHeight + 75);
+  // Logo
+  ctx.font = "20px Arial";
+  ctx.fillText("@CHEMISTRY30S", canvas.width / 2, canvas.height - 25);
 
-  // Save final image with frame + date + logo
-  const dataURL = canvas.toDataURL("image/png");
-  latestImage = dataURL;
-  addToGallery(dataURL);
+  latestImage = canvas.toDataURL("image/png");
+  addToGallery(latestImage);
 }
 
+// Gallery
 function addToGallery(dataURL) {
   downloadButton.disabled = false;
 
@@ -122,9 +135,8 @@ function addToGallery(dataURL) {
   gallery.appendChild(frame);
 }
 
-// Trigger download
- downloadButton.addEventListener("click", () => 
-   {
+// Download
+downloadButton.addEventListener("click", () => {
   if (!latestImage) return;
 
   const link = document.createElement("a");
@@ -133,5 +145,12 @@ function addToGallery(dataURL) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
- });
+});
 
+// Flip camera
+flipCameraButton.addEventListener("click", async () => {
+  usingFrontCamera = !usingFrontCamera;
+  cameraStarted = false;
+  await startCamera();
+  cameraStarted = true;
+});
