@@ -27,6 +27,10 @@ h1
     gap: 6px;
 }
 
+video.mirror {
+    transform: scaleX(-1);
+}
+
 video{
     display: block;
     width: 100%;
