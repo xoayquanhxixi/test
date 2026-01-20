@@ -73,7 +73,6 @@ function startCountdown(time) {
   }, 1000);
 }
 
-// Take photo
 function takeSnapshot() {
   if (video.videoWidth === 0) {
     alert("Camera not ready yet");
@@ -82,39 +81,39 @@ function takeSnapshot() {
 
   const ctx = canvas.getContext("2d");
 
-  const border = 25;
-  const bottomBorder = 100;
-  
-canvas.width = video.videoHeight + border * 2;
-  canvas.height = video.videoWidth + border + bottomBorder;
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
 
-  // White Polaroid background
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Force 3:4 portrait output
+  canvas.width = 960;
+  canvas.height = 1280;
 
- ctx.save();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Move origin to center of photo area
-  ctx.translate(canvas.width / 2, (canvas.height - bottomBorder) / 2);
+  // Scale to fill canvas (no stretching)
+  const scale = Math.max(
+    canvas.width / vw,
+    canvas.height / vh
+  );
 
-  // Rotate for portrait mobile camera
-  ctx.rotate(Math.PI / 2);
+  const drawWidth = vw * scale;
+  const drawHeight = vh * scale;
 
-  // Mirror ONLY front camera
+  const x = (canvas.width - drawWidth) / 2;
+  const y = (canvas.height - drawHeight) / 2;
+
+  // Mirror saved photo ONLY for front camera
   if (usingFrontCamera) {
+    ctx.save();
+    ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
   }
 
-  // Draw video centered
-  ctx.drawImage(
-    video,
-    -video.videoHeight / 2,
-    -video.videoWidth / 2,
-    video.videoHeight,
-    video.videoWidth
-  );
+  ctx.drawImage(video, x, y, drawWidth, drawHeight);
 
-  ctx.restore();
+  if (usingFrontCamera) {
+    ctx.restore();
+  }
 
   // Date
   ctx.fillStyle = "black";
