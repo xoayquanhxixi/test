@@ -84,24 +84,37 @@ function takeSnapshot() {
 
   const border = 25;
   const bottomBorder = 100;
-
-  canvas.width = video.videoWidth + border * 2;
-  canvas.height = video.videoHeight + border + bottomBorder;
+  
+canvas.width = video.videoHeight + border * 2;
+  canvas.height = video.videoWidth + border + bottomBorder;
 
   // White Polaroid background
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw image (mirror ONLY front camera)
+ ctx.save();
+
+  // Move origin to center of photo area
+  ctx.translate(canvas.width / 2, (canvas.height - bottomBorder) / 2);
+
+  // Rotate for portrait mobile camera
+  ctx.rotate(Math.PI / 2);
+
+  // Mirror ONLY front camera
   if (usingFrontCamera) {
-    ctx.save();
-    ctx.translate(border + video.videoWidth, border);
     ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-    ctx.restore();
-  } else {
-    ctx.drawImage(video, border, border, video.videoWidth, video.videoHeight);
   }
+
+  // Draw video centered
+  ctx.drawImage(
+    video,
+    -video.videoHeight / 2,
+    -video.videoWidth / 2,
+    video.videoHeight,
+    video.videoWidth
+  );
+
+  ctx.restore();
 
   // Date
   ctx.fillStyle = "black";
