@@ -120,27 +120,31 @@ function takeSnapshot() {
     ctx.restore();
   }
 
-  // --- Bottom frame background (Polaroid style) ---
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, photoHeight, canvas.width, bottomFrameHeight);
+  // ---------- POLAROID TEXT (FIXED) ----------
+ctx.fillStyle = "black";
+ctx.textAlign = "center";
 
-  // Date text
-  ctx.fillStyle = "black";
-  ctx.font = "18px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText(
-    "Taken on: " + new Date().toLocaleString(),
-    canvas.width / 2,
-    canvas.height - 55
-  );
+// Font sizes tuned for 960×1280 Polaroid
+const dateFontSize = 22;
+const logoFontSize = 26;
 
-  // Logo
-  ctx.font = "20px Arial";
-  ctx.fillText(
-    "@CHEMISTRY30S",
-    canvas.width / 2,
-    canvas.height - 25
-  );
+// Position text relative to bottom frame
+const frameTop = photoHeight;
+const frameCenter = frameTop + bottomFrameHeight / 2;
+
+ctx.font = `${dateFontSize}px Arial`;
+ctx.fillText(
+  new Date().toLocaleDateString(),
+  canvas.width / 2,
+  frameCenter - 8
+);
+
+ctx.font = `${logoFontSize}px Arial`;
+ctx.fillText(
+  "@CHEMISTRY30S",
+  canvas.width / 2,
+  frameCenter + 28
+);
 
   latestImage = canvas.toDataURL("image/png");
   addToGallery(latestImage);
