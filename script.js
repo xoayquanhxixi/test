@@ -95,7 +95,7 @@ function takeSnapshot() {
   const photoHeight = canvas.height - bottomFrameHeight;
 
   // Scale video to FIT (not cover) the photo area
-  const scale = Math.min(
+  const scale = Math.max(
     canvas.width / vw,
     photoHeight / vh
   );
@@ -106,7 +106,6 @@ function takeSnapshot() {
   const x = (canvas.width - drawWidth) / 2;
   const y = (photoHeight - drawHeight) / 2;
 
-  // --- FIX MIRROR ISSUE ---
   // Un-mirror front camera feed for final image
   if (usingFrontCamera) {
     ctx.save();
@@ -120,13 +119,13 @@ function takeSnapshot() {
     ctx.restore();
   }
 
-  // ---------- POLAROID TEXT (FIXED) ----------
+  // POLAROID TEXT
 ctx.fillStyle = "black";
 ctx.textAlign = "center";
 
 // Font sizes tuned for 960×1280 Polaroid
-const dateFontSize = 22;
-const logoFontSize = 26;
+const dateFontSize = 32;
+const logoFontSize = 40;
 
 // Position text relative to bottom frame
 const frameTop = photoHeight;
@@ -136,14 +135,14 @@ ctx.font = `${dateFontSize}px Arial`;
 ctx.fillText(
   new Date().toLocaleDateString(),
   canvas.width / 2,
-  frameCenter - 8
+  frameCenter - 6
 );
 
 ctx.font = `${logoFontSize}px Arial`;
 ctx.fillText(
   "@CHEMISTRY30S",
   canvas.width / 2,
-  frameCenter + 28
+  frameCenter + 38
 );
 
   latestImage = canvas.toDataURL("image/png");
