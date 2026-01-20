@@ -91,20 +91,38 @@ function takeSnapshot() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Reserve space for bottom frame (text area)
-  const bottomFrameHeight = 120;
+  const bottomFrameHeight = Math. round(;
   const photoHeight = canvas.height - bottomFrameHeight;
 
   // Scale video to FIT (not cover) the photo area
-  const scale = Math.max(
-    canvas.width / vw,
-    photoHeight / vh
-  );
+  const scale = Math.max(canvas.height * 0.18);
 
-  const drawWidth = vw * scale;
-  const drawHeight = vh * scale;
+  // Target photo aspect ratio
+const targetAspect = canvas.width / photoHeight;
+const videoAspect = vw / vh;
 
-  const x = (canvas.width - drawWidth) / 2;
-  const y = (photoHeight - drawHeight) / 2;
+let sx, sy, sw, sh;
+
+if (videoAspect > targetAspect) {
+  // Video is wider → crop sides
+  sh = vh;
+  sw = vh * targetAspect;
+  sx = (vw - sw) / 2;
+  sy = 0;
+} else {
+  // Video is taller → crop top/bottom
+  sw = vw;
+  sh = vw / targetAspect;
+  sx = 0;
+  sy = (vh - sh) / 2;
+}
+
+// Draw cropped video to photo area
+ctx.drawImage(
+  video,
+  sx, sy, sw, sh,          // source crop
+  0, 0, canvas.width, photoHeight // destination
+);
 
   // Un-mirror front camera feed for final image
   if (usingFrontCamera) {
