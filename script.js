@@ -102,18 +102,8 @@ function takeSnapshot() {
   const x = (canvas.width - drawWidth) / 2;
   const y = (canvas.height - drawHeight) / 2;
 
-  // Mirror saved photo ONLY for front camera
-  if (usingFrontCamera) {
-    ctx.save();
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-  }
-
+  // Draw video normally (NO MIRRORING)
   ctx.drawImage(video, x, y, drawWidth, drawHeight);
-
-  if (usingFrontCamera) {
-    ctx.restore();
-  }
 
   // Date
   ctx.fillStyle = "black";
