@@ -84,28 +84,47 @@ function takeSnapshot() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Force 3:4 portrait output
+  // Final image size (3:4)
   canvas.width = 960;
   canvas.height = 1280;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Scale to fill canvas (no stretching)
-  const scale = Math.max(
+  // Reserve space for bottom frame (text area)
+  const bottomFrameHeight = 120;
+  const photoHeight = canvas.height - bottomFrameHeight;
+
+  // Scale video to FIT (not cover) the photo area
+  const scale = Math.min(
     canvas.width / vw,
-    canvas.height / vh
+    photoHeight / vh
   );
 
   const drawWidth = vw * scale;
   const drawHeight = vh * scale;
 
   const x = (canvas.width - drawWidth) / 2;
-  const y = (canvas.height - drawHeight) / 2;
+  const y = (photoHeight - drawHeight) / 2;
 
-  // Draw video normally (NO MIRRORING)
+  // --- FIX MIRROR ISSUE ---
+  // Un-mirror front camera feed for final image
+  if (usingFrontCamera) {
+    ctx.save();
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+  }
+
   ctx.drawImage(video, x, y, drawWidth, drawHeight);
 
-  // Date
+  if (usingFrontCamera) {
+    ctx.restore();
+  }
+
+  // --- Bottom frame background (Polaroid style) ---
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, photoHeight, canvas.width, bottomFrameHeight);
+
+  // Date text
   ctx.fillStyle = "black";
   ctx.font = "18px Arial";
   ctx.textAlign = "center";
@@ -117,7 +136,11 @@ function takeSnapshot() {
 
   // Logo
   ctx.font = "20px Arial";
-  ctx.fillText("@CHEMISTRY30S", canvas.width / 2, canvas.height - 25);
+  ctx.fillText(
+    "@CHEMISTRY30S",
+    canvas.width / 2,
+    canvas.height - 25
+  );
 
   latestImage = canvas.toDataURL("image/png");
   addToGallery(latestImage);
