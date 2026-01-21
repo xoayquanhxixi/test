@@ -103,7 +103,6 @@ function takeSnapshot() {
 
   latestImage = canvas.toDataURL("image/png");
 
-  addToGallery(latestImage);
   downloadButton.disabled = false;
 }
 
