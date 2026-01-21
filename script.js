@@ -84,84 +84,78 @@ function takeSnapshot() {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  // Final image size (3:4)
+  // Final Polaroid size (3:4)
   canvas.width = 960;
   canvas.height = 1280;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Reserve space for bottom frame (text area)
-  const bottomFrameHeight = Math. round(;
+  // Polaroid bottom frame (18%)
+  const bottomFrameHeight = Math.round(canvas.height * 0.18);
   const photoHeight = canvas.height - bottomFrameHeight;
 
-  // Scale video to FIT (not cover) the photo area
-  const scale = Math.max(canvas.height * 0.18);
+  // Aspect ratios
+  const targetAspect = canvas.width / photoHeight;
+  const videoAspect = vw / vh;
 
-  // Target photo aspect ratio
-const targetAspect = canvas.width / photoHeight;
-const videoAspect = vw / vh;
+  let sx, sy, sw, sh;
 
-let sx, sy, sw, sh;
+  if (videoAspect > targetAspect) {
+    // Video wider → crop sides
+    sh = vh;
+    sw = vh * targetAspect;
+    sx = (vw - sw) / 2;
+    sy = 0;
+  } else {
+    // Video taller → crop top/bottom
+    sw = vw;
+    sh = vw / targetAspect;
+    sx = 0;
+    sy = (vh - sh) / 2;
+  }
 
-if (videoAspect > targetAspect) {
-  // Video is wider → crop sides
-  sh = vh;
-  sw = vh * targetAspect;
-  sx = (vw - sw) / 2;
-  sy = 0;
-} else {
-  // Video is taller → crop top/bottom
-  sw = vw;
-  sh = vw / targetAspect;
-  sx = 0;
-  sy = (vh - sh) / 2;
-}
-
-// Draw cropped video to photo area
-ctx.drawImage(
-  video,
-  sx, sy, sw, sh,          // source crop
-  0, 0, canvas.width, photoHeight // destination
-);
-
-  // Un-mirror front camera feed for final image
+  // Mirror ONLY for front camera (before drawing)
+  ctx.save();
   if (usingFrontCamera) {
-    ctx.save();
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
   }
 
-  ctx.drawImage(video, x, y, drawWidth, drawHeight);
+  // Draw cropped photo
+  ctx.drawImage(
+    video,
+    sx, sy, sw, sh,          // source crop
+    0, 0, canvas.width, photoHeight // destination
+  );
 
-  if (usingFrontCamera) {
-    ctx.restore();
-  }
+  ctx.restore();
 
-  // POLAROID TEXT
-ctx.fillStyle = "black";
-ctx.textAlign = "center";
+  // Bottom Polaroid frame
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, photoHeight, canvas.width, bottomFrameHeight);
 
-// Font sizes tuned for 960×1280 Polaroid
-const dateFontSize = 32;
-const logoFontSize = 40;
+  // Text styling
+  ctx.fillStyle = "black";
+  ctx.textAlign = "center";
 
-// Position text relative to bottom frame
-const frameTop = photoHeight;
-const frameCenter = frameTop + bottomFrameHeight / 2;
+  const dateFontSize = 32;
+  const logoFontSize = 40;
 
-ctx.font = `${dateFontSize}px Arial`;
-ctx.fillText(
-  new Date().toLocaleDateString(),
-  canvas.width / 2,
-  frameCenter - 6
-);
+  const frameCenter = photoHeight + bottomFrameHeight / 2;
 
-ctx.font = `${logoFontSize}px Arial`;
-ctx.fillText(
-  "@CHEMISTRY30S",
-  canvas.width / 2,
-  frameCenter + 38
-);
+  ctx.font = `${dateFontSize}px Arial`;
+  ctx.fillText(
+    new Date().toLocaleDateString(),
+    canvas.width / 2,
+    frameCenter - 6
+  );
+
+  ctx.font = `${logoFontSize}px Arial`;
+  ctx.fillText(
+    "@CHEMISTRY30S",
+    canvas.width / 2,
+    frameCenter + 38
+  );
 
   latestImage = canvas.toDataURL("image/png");
   addToGallery(latestImage);
