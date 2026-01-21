@@ -113,6 +113,8 @@ function takeSnapshot() {
 
 // GALLERY
 function addToGallery(src) {
+  gallery.innerHTML = "";
+  
   const frame = document.createElement("div");
   frame.className = "polaroid small";
 
