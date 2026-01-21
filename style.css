@@ -95,6 +95,11 @@ video {
   background: white;
   padding: 12px 12px 32px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+
+  #polaroidPreview {
+  width: 240px;
+    aspect-ratio: 3/4;
+  }
 }
 
 .polaroid img {
