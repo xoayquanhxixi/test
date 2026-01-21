@@ -1,75 +1,61 @@
 const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas") || document.createElement("canvas");
 const takePhotoButton = document.getElementById("takePhoto");
 const downloadButton = document.getElementById("downloadPhoto");
 const countdownEl = document.getElementById("countdown");
 const gallery = document.getElementById("gallery");
+const polaroidPreview = document.getElementById("polaroidPreview");
+const polaroidImage = document.getElementById("polaroidImage");
 
 let latestImage = null;
-let cameraStarted = false;
-let currentStream = null;
+let stream = null;
 
-// Start camera
+// START CAMERA
 async function startCamera() {
-  try {
-    if (currentStream) {
-      currentStream.getTracks().forEach(track => track.stop());
-    }
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" }
-    });
-
-    currentStream = stream;
-    video.srcObject = stream;
-
-    await video.play();
-    video.classList.add("mirror");
-    cameraStarted = true;
-  } catch (err) {
-    alert("Camera error: " + err);
-  }
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "user" }
+  });
+  video.srcObject = stream;
+  await video.play();
+  video.classList.add("mirror");
 }
 
-// Countdown
+window.addEventListener("load", startCamera);
+
+// COUNTDOWN
 const COUNT_TIME = 3;
 
 takePhotoButton.addEventListener("click", () => {
-  if (!cameraStarted) return;
   startCountdown(COUNT_TIME);
 });
 
 function startCountdown(time) {
   countdownEl.textContent = time;
-
-  const interval = setInterval(() => {
+  const timer = setInterval(() => {
     time--;
     if (time > 0) {
       countdownEl.textContent = time;
     } else {
-      clearInterval(interval);
+      clearInterval(timer);
       countdownEl.textContent = "";
       takeSnapshot();
     }
   }, 1000);
 }
 
+// TAKE PHOTO
 function takeSnapshot() {
   const ctx = canvas.getContext("2d");
 
   const vw = video.videoWidth;
   const vh = video.videoHeight;
 
-  if (!vw || !vh) return;
-
-  // Polaroid size
   canvas.width = 960;
   canvas.height = 1280;
 
-  const bottomFrameHeight = Math.round(canvas.height * 0.18);
-  const photoHeight = canvas.height - bottomFrameHeight;
+  const bottomFrame = Math.round(canvas.height * 0.18);
+  const photoHeight = canvas.height - bottomFrame;
 
-  // Crop to match photo area
   const targetAspect = canvas.width / photoHeight;
   const videoAspect = vw / vh;
 
@@ -91,61 +77,56 @@ function takeSnapshot() {
   ctx.translate(canvas.width, 0);
   ctx.scale(-1, 1);
 
-  ctx.drawImage(
-    video,
-    sx, sy, sw, sh,
-    0, 0, canvas.width, photoHeight
-  );
-
+  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, photoHeight);
   ctx.restore();
 
   // Bottom frame
   ctx.fillStyle = "white";
-  ctx.fillRect(0, photoHeight, canvas.width, bottomFrameHeight);
+  ctx.fillRect(0, photoHeight, canvas.width, bottomFrame);
 
-  // Text
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "#000";
   ctx.textAlign = "center";
 
   ctx.font = "32px Arial";
   ctx.fillText(
     new Date().toLocaleDateString(),
     canvas.width / 2,
-    photoHeight + bottomFrameHeight / 2 - 8
+    photoHeight + bottomFrame / 2 - 6
   );
 
   ctx.font = "40px Arial";
   ctx.fillText(
     "@CHEMISTRY30S",
     canvas.width / 2,
-    photoHeight + bottomFrameHeight / 2 + 36
+    photoHeight + bottomFrame / 2 + 36
   );
 
   latestImage = canvas.toDataURL("image/png");
+
+  // Show side-by-side result
+  polaroidImage.src = latestImage;
+  polaroidPreview.classList.remove("hidden");
+
   addToGallery(latestImage);
+  downloadButton.disabled = false;
 }
 
-// Gallery
-function addToGallery(dataURL) {
-  downloadButton.disabled = false;
+// GALLERY
+function addToGallery(src) {
+  const frame = document.createElement("div");
+  frame.className = "polaroid small";
 
   const img = document.createElement("img");
-  img.src = dataURL;
-  img.style.width = "140px";
-  img.style.margin = "8px";
+  img.src = src;
 
-  gallery.appendChild(img);
+  frame.appendChild(img);
+  gallery.appendChild(frame);
 }
 
-// Download
+// DOWNLOAD
 downloadButton.addEventListener("click", () => {
-  if (!latestImage) return;
-
-  const link = document.createElement("a");
-  link.href = latestImage;
-  link.download = `polaroid_${Date.now()}.png`;
-  link.click();
+  const a = document.createElement("a");
+  a.href = latestImage;
+  a.download = `polaroid_${Date.now()}.png`;
+  a.click();
 });
-
-// Auto-start camera
-window.addEventListener("load", startCamera);
