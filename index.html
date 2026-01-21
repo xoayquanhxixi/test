@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title> Photo Booth</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Photo Booth</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>📸 Photo Booth</h1>
 
-        <div class="camera-area">
-            <video id="video" autoplay muted playsinline ></video>
-        </div>
+  <div class="container">
+    <h1>📸 Photo Booth</h1>
 
-                    <canvas id="canvas"></canvas>
-
-        <div id="countdown"></div>
-
-        <button id="takePhoto">Take Pictures</button>
-            <button id="downloadPhoto" disabled >Download</button>
+    <div class="camera-area">
+      <video id="video" autoplay muted playsinline></video>
+      <div id="countdown"></div>
     </div>
 
-        <div id="gallery"></div>
-</div>
+    <canvas id="canvas"></canvas>
 
-    <script src="script.js"></script>
+    <div class="controls">
+      <button id="takePhoto">Take Photo</button>
+      <button id="flipCamera">Flip Camera</button>
+      <button id="downloadPhoto" disabled>Download</button>
+    </div>
+  </div>
+
+  <div id="gallery"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
