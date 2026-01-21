@@ -77,9 +77,31 @@ function takeSnapshot() {
   ctx.translate(canvas.width, 0);
   ctx.scale(-1, 1);
 
-  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, photoHeight);
-  ctx.restore();
 
+const sideMargin = 40;
+const topMargin = 40;
+
+// White Polaroid base
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// Mirror video
+ctx.save();
+ctx.translate(canvas.width, 0);
+ctx.scale(-1, 1);
+
+// Draw photo INSIDE frame
+ctx.drawImage(
+  video,
+  sx, sy, sw, sh,
+  sideMargin,
+  topMargin,
+  canvas.width - sideMargin * 2,
+  photoHeight - topMargin
+);
+
+ctx.restore();
+  
   // Bottom frame
   ctx.fillStyle = "white";
   ctx.fillRect(0, photoHeight, canvas.width, bottomFrame);
