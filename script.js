@@ -103,10 +103,6 @@ function takeSnapshot() {
 
   latestImage = canvas.toDataURL("image/png");
 
-  // Show side-by-side result
-  polaroidImage.src = latestImage;
-  polaroidPreview.classList.remove("hidden");
-
   addToGallery(latestImage);
   downloadButton.disabled = false;
 }
