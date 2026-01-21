@@ -72,12 +72,7 @@ function takeSnapshot() {
     sx = 0;
     sy = (vh - sh) / 2;
   }
-
-  ctx.save();
-  ctx.translate(canvas.width, 0);
-  ctx.scale(-1, 1);
-
-
+  
 const sideMargin = 40;
 const topMargin = 40;
 
