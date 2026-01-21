@@ -194,3 +194,8 @@ flipCameraButton.addEventListener("click", async () => {
   await startCamera();
   cameraStarted = true;
 });
+
+window.addEventListener("load", async () => {
+  const ready = await startCamera();
+  cameraStarted = ready;
+});
