@@ -1,103 +1,49 @@
-body 
-{
-    font-family: "Poppins", sans-serif;
-    background: #f9f6f8; /* light pastel */
-    color: #1e3a8a;     /* dark blue text */
-    margin: 0;
-    padding: 12px;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f6f8;
 }
 
-.container 
-{
-    max-width: 420px;
-    margin: auto;
-    text-align: center;
+.container {
+  max-width: 420px;
+  margin: auto;
+  text-align: center;
 }
 
-h1
-{
-    margin-bottom: 8px;
+.camera-area {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: black;
+  position: relative;
+  overflow: hidden;
 }
 
-.camera-area 
-{
-    display: flex;
-    flex-direction:column;
-    align-items: center;
-    gap: 6px;
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-video.mirror {
-    transform: scaleX(-1);
-}
-
-video{
-    display: block;
-    width: 100%;
-    max-width: 320px;
-    height: auto;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-    border-radius: 14px;
-    background: black;
-}
-
-canvas
-{
-    display:none;
-}
-
-button {
-    background: #c8d8f6;
-    border: none;
-    border-radius: 999px;
-    padding: 12px 28px;
-    font-size: 18px;
-    color: #1e3a8a;
-    margin-top: 8px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-button:hover {
-    background: #aebede;
+.mirror {
+  transform: scaleX(-1);
 }
 
 #countdown {
-    font-size: 40px;
-    font-weight: bold;
-    color: #1e3a8a;
-    margin: 4px 0;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  color: white;
+  font-weight: bold;
 }
 
-#downloadPhoto
-{
-    background: #e6ecfa;
+canvas {
+  display: none;
 }
 
-#downloadPhoto:disabled
-{
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Polaroid frame */
-.photo-frame {
-    background: white;
-    width: 320px;
-    padding: 10px;
-    margin: 10px auto;
-    border: 5px solid #f2f0f3;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
-
-.photo-frame img {
-    width: 100%;
-}
-
-.photo-date {
-    font-size: 16px;
-    color: #1e3a8a;
-    margin-top: 8px;
+.controls button {
+  margin: 6px;
+  padding: 10px 16px;
 }
