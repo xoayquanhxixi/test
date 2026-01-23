@@ -35,7 +35,7 @@ canvas {
 
 .camera-area {
   flex: 1.3;
-  min-width: 480px;
+  min-width: 420px;
   aspect-ratio: 3 / 4;
   background: black;
   position: relative;
@@ -43,8 +43,8 @@ canvas {
 }
 
 video {
-  width: 40%;
-  height: 40%;
+  width: 65%;
+  height: 65%;
   object-fit: cover;
 }
 
