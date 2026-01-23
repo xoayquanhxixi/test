@@ -5,7 +5,7 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 600px;
   margin: auto;
   text-align: center;
 }
@@ -43,8 +43,8 @@ canvas {
 }
 
 video {
-  width: 65%;
-  height: 65%;
+  width: 70%;
+  height: 70%;
   object-fit: cover;
 }
 
