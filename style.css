@@ -43,8 +43,8 @@ canvas {
 }
 
 video {
-  width: 55%;
-  height: 55%;
+  width: 40%;
+  height: 40%;
   object-fit: cover;
 }
 
